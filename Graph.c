@@ -1,6 +1,10 @@
 // Graph ADT interface for Ass2 (COMP2521)
 //Written By Jasdeep, Atharv & Pramith
 
+//Testing Complete
+//Syntactically Correct
+//Passes testGraph.sh
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
