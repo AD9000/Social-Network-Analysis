@@ -6,19 +6,20 @@
 #include <assert.h>
 
 #include "Graph.h"
+static int validVertex(Graph g, Vertex v);
 
 //complete
 struct GraphRep{
 	int nVertices;
 	int nEdges;
-	AdjList edges[];
+	AdjList *edges;
 };
 
 //complete
 Graph newGraph(int noNodes) {
 
 	assert(noNodes > 0);
-	Graph new = malloc(sizeof(GraphRep));
+	Graph new = malloc(sizeof(struct GraphRep));
 	assert(new != NULL);
 	new->nVertices = noNodes;
 	new->nEdges = 0;
@@ -31,7 +32,7 @@ Graph newGraph(int noNodes) {
 
 //complete
 int numVerticies(Graph g) {
-	assert(g != NULL)
+	assert(g != NULL);
 	return g->nVertices;
 }
 
@@ -43,7 +44,7 @@ void  insertEdge(Graph g, Vertex src, Vertex dest, int weight) {
 	//if edges[src] is NULL
 	if(g->edges[src] == NULL){
 		AdjList new = malloc(sizeof(adjListNode));
-		new->Vertex = dest;
+		new->w = dest;
 		new->weight = weight;
 		new->next = NULL;
 		g->edges[src] = new;
@@ -52,7 +53,7 @@ void  insertEdge(Graph g, Vertex src, Vertex dest, int weight) {
 	//insert in the front of the list
 	} else {
 		AdjList new = malloc(sizeof(adjListNode));
-		new->Vertex = dest;
+		new->w = dest;
 		new->weight = weight;
 		new->next = g->edges[src];
 		g->edges[src] = new;
