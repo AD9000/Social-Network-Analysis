@@ -104,9 +104,12 @@ void  freePQ(PQ pq) {
 }
 
 
-//not complete
+//complete
 static void swap(ItemPQ **a, int i, int j){
 
+   ItemPQ *tmp = a[i];
+   a[i] = a[j];
+   a[j] = tmp;
 }
 
 //not complete
