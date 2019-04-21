@@ -22,6 +22,7 @@ PQ newPQ() {
 	PQ new = malloc(sizeof(struct PQRep));
 	assert(new != NULL);
 	new->Prior_Q = malloc(MAX_ELEMS * (sizeof(ItemPQ*)));
+	assert(new->Prior_Q != NULL);
 	for (int i = 0; i < MAX_ELEMS; i++){
 	    new->Prior_Q[i] = NULL;
 	}
@@ -31,13 +32,15 @@ PQ newPQ() {
 
 //complete
 int PQEmpty(PQ p) {
-
-		return (p->N == 0);
+	
+	assert(pq != NULL);
+	return (p->N == 0);
 }
 
 //complete
 void addPQ(PQ pq, ItemPQ element) {
-    
+	
+    assert(pq != NULL);
     //update 'value' if 'key' exists
     int i = 1;
     while(i <= pq->N && pq->Prior_Q[i] != NULL){
@@ -61,6 +64,7 @@ void addPQ(PQ pq, ItemPQ element) {
 //complete
 ItemPQ dequeuePQ(PQ pq) {
 	
+	assert(pq != NULL);
 	ItemPQ throwAway;
 	throwAway.key = pq->Prior_Q[1]->key;
 	throwAway.value = pq->Prior_Q[1]->value;
@@ -73,6 +77,8 @@ ItemPQ dequeuePQ(PQ pq) {
 
 //complete
 void updatePQ(PQ pq, ItemPQ element) {
+    
+    assert(pq != NULL);
     int i = 1;
     while (i <= pq->N){
         if(pq->Prior_Q[i]->key == element.key){
@@ -85,7 +91,8 @@ void updatePQ(PQ pq, ItemPQ element) {
 
 //complete
 void  showPQ(PQ pq) {
-    
+	
+    assert(pq != NULL);
     int i = 1;
     while(pq->Prior_Q[i] != NULL && i <= pq->N){
         printf("(%d, %d)\n", pq->Prior_Q[i]->key, pq->Prior_Q[i]->value);
