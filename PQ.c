@@ -9,6 +9,7 @@
 static void fixUp(ItemPQ **a, int i);
 static void fixDown(ItemPQ **a, int i, int N);
 static void swap(ItemPQ **a, int i, int j);
+//static int larger(ItemPQ*, ItemPQ*);
 
 struct PQRep {
     ItemPQ ** Prior_Q; //an array of pointers to PQ structures
@@ -42,6 +43,7 @@ void addPQ(PQ pq, ItemPQ element) {
     while(i <= pq->N && pq->Prior_Q[i] != NULL){
         if(pq->Prior_Q[i]->key == element.key){
             pq->Prior_Q[i]->value = element.value;
+            fixUp(pq->Prior_Q, pq->N);
             return;
         }
         i++;
@@ -65,6 +67,7 @@ ItemPQ dequeuePQ(PQ pq) {
 	pq->Prior_Q[1] = pq->Prior_Q[pq->N];
 	pq->N--;
 	fixDown(pq->Prior_Q, 1, pq->N);
+	
 	return throwAway;
 }
 
@@ -74,6 +77,7 @@ void updatePQ(PQ pq, ItemPQ element) {
     while (i <= pq->N){
         if(pq->Prior_Q[i]->key == element.key){
             pq->Prior_Q[i]->value = element.value;
+            fixUp(pq->Prior_Q, pq->N);
         }
         i++;
     }
@@ -83,7 +87,7 @@ void updatePQ(PQ pq, ItemPQ element) {
 void  showPQ(PQ pq) {
     
     int i = 1;
-    while(pq->Prior_Q[i] != NULL){
+    while(pq->Prior_Q[i] != NULL && i <= pq->N){
         printf("(%d, %d)\n", pq->Prior_Q[i]->key, pq->Prior_Q[i]->value);
         i++;    
     }
@@ -111,18 +115,29 @@ static void swap(ItemPQ **a, int i, int j){
    a[i] = a[j];
    a[j] = tmp;
 }
-
-//not complete
-//fixUp function
+ 
+//complete
 static void fixUp(ItemPQ **a, int i){
+    while(i > 1 && a[i/2]->value > a[i]->value){
+        swap(a, i, i/2);
+        i=i/2;
+    }
 }
 
-//not complete
-//fixDown function
+//complete
 static void fixDown(ItemPQ **a, int i, int N){
-
+    
+    while(2*i < N){
+        int j = 2*i;
+        
+        if (j < N && a[j]->value > a[j+1]->value){
+            j++;
+        }
+        
+        if (! (a[i]->value > a[j]->value)) {
+            break;
+        }
+        swap(a, i, j);
+        i = j;
+    }
 }
-
-
-
-
