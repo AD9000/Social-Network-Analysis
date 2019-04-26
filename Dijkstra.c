@@ -35,7 +35,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	PQ priorQ = newPQ();
 
 	//add adjacent vertices and edge weights 
-    AdjList l = outIncident(g, v);
+    	AdjList l = outIncident(g, v);
 	AdjList curr = l;
 	while (curr != NULL){
 		ItemPQ new;
