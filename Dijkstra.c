@@ -8,8 +8,9 @@
 
 static bool inPredNodeList(PredNode* L, Vertex ver);
 
-//shortest distance complete
-//working on pred path - almost there
+//complete
+//can't see any memory leaks but actively looking for them
+//will be another few mins
 ShortestPaths dijkstra(Graph g, Vertex v) {
 	
 	ShortestPaths throwAway;
@@ -118,6 +119,7 @@ void  freeShortestPaths(ShortestPaths paths) {
     //free the linked list pred
 }
 
+//static function to check if a particular node exists in a predecessor
 static bool inPredNodeList(PredNode* L, Vertex ver){
     PredNode *curr = L;
     while(curr != NULL){
