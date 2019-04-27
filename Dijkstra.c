@@ -37,7 +37,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	PQ priorQ = newPQ();
 
 	//add adjacent vertices and edge weights 
-    AdjList l = outIncident(g, v);
+    	AdjList l = outIncident(g, v);
 	AdjList curr = l;
 	while (curr != NULL){
 		ItemPQ new;
@@ -45,7 +45,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 		new.value = curr->weight;
 		addPQ(priorQ, new);
 		curr = curr->next;
-    }
+    	}
     
 	//add the source vertex to the Priority Queue
 	ItemPQ src;
@@ -82,8 +82,8 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			    if (!inPredNodeList(throwAway.pred[curr->w], u)){
 			        PredNode *new = malloc(sizeof(PredNode));
 			        new->v = u;
-		            new->next = throwAway.pred[curr->w];
-		            throwAway.pred[curr->w] = new;
+			    	new->next = throwAway.pred[curr->w];
+			    	throwAway.pred[curr->w] = new;
 			    }
 			}
 			curr = curr->next;
