@@ -7,10 +7,10 @@
 #include <limits.h>
 
 static bool inPredNodeList(PredNode* L, Vertex ver);
+static void freePredList(PredNode* L);
 
-//complete
-//can't see any memory leaks but actively looking for them
-//will be another few mins
+//shortest distance complete
+//working on pred path - almost there
 ShortestPaths dijkstra(Graph g, Vertex v) {
 	
 	ShortestPaths throwAway;
@@ -37,7 +37,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	PQ priorQ = newPQ();
 
 	//add adjacent vertices and edge weights 
-    	AdjList l = outIncident(g, v);
+    AdjList l = outIncident(g, v);
 	AdjList curr = l;
 	while (curr != NULL){
 		ItemPQ new;
@@ -71,6 +71,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 				    new->v = u;
 				    new->next = NULL;
 				} else {
+				    freePredList(throwAway.pred[curr->w]);
 			        PredNode *new = malloc(sizeof(PredNode));
 			        throwAway.pred[curr->w] = new;
 			        new->v = u;
@@ -81,8 +82,8 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			    if (!inPredNodeList(throwAway.pred[curr->w], u)){
 			        PredNode *new = malloc(sizeof(PredNode));
 			        new->v = u;
-		            	new->next = throwAway.pred[curr->w];
-		            	throwAway.pred[curr->w] = new;
+		            new->next = throwAway.pred[curr->w];
+		            throwAway.pred[curr->w] = new;
 			    }
 			}
 			curr = curr->next;
@@ -99,27 +100,42 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 }
 
 
-//Little more work - 20 mins max
+//complete
 void showShortestPaths(ShortestPaths paths) {
     printf("Total Nodes in Graph: %d\n\n", paths.noNodes);
-    printf("Distance from node %d to other nodes is as under: ", paths.src);
+    printf("Distance from node %d to other nodes is as under: \n", paths.src);
     printf("Distance:\n");
     for(int i = 0; i < paths.noNodes; i++){
         printf("%d : %d\n", i, paths.dist[i]);   
     }
-    printf("Preds");
+    printf("Preds\n");
     for(int i = 0; i < paths.noNodes; i++){
-        printf("%d : ", i);
+        PredNode *curr = paths.pred[i];
+        printf("%d: ", i);
+        while(curr!=NULL){
+            printf(" [%d] ", curr->v);
+            curr = curr->next;
+        }
     }
 }
 
-//Little more work - 20 mins max
+//complete
 void  freeShortestPaths(ShortestPaths paths) {
     free(paths.dist);
-    //free the linked list pred
+    //free the linked lists in the pred
+    for(int i = 0; i < paths.noNodes; i++){
+        PredNode *prev = NULL;
+        PredNode *curr = paths.pred[i];
+        while (curr != NULL){
+            prev = curr;
+            curr = curr->next;
+            free(prev);
+        }
+    }
+    free(paths.pred);
 }
 
-//static function to check if a particular node exists in a predecessor
+//checks if a vertex is already in the PredNode list
 static bool inPredNodeList(PredNode* L, Vertex ver){
     PredNode *curr = L;
     while(curr != NULL){
@@ -131,3 +147,15 @@ static bool inPredNodeList(PredNode* L, Vertex ver){
     return false;
 }
 
+//frees memory related to a PredList when a 
+//new PredList is created upon the discovery of 
+//a path shorter than the current shortest path
+static void freePredList(PredNode* L){
+    PredNode *prev = NULL;
+    PredNode *curr = L;
+    while (curr != NULL){
+        prev = curr;
+        curr = curr->next;
+        free(prev);
+    }
+}
