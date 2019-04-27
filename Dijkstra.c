@@ -80,8 +80,8 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			    if (!inPredNodeList(throwAway.pred[curr->w], u)){
 			        PredNode *new = malloc(sizeof(PredNode));
 			        new->v = u;
-		            new->next = throwAway.pred[curr->w];
-		            throwAway.pred[curr->w] = new;
+		            	new->next = throwAway.pred[curr->w];
+		            	throwAway.pred[curr->w] = new;
 			    }
 			}
 			curr = curr->next;
