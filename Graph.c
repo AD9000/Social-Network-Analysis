@@ -1,3 +1,4 @@
+
 // Graph ADT interface for Ass2 (COMP2521)
 //Written By Jasdeep, Atharv & Pramith
 
@@ -8,14 +9,14 @@
 
 static int validVertex(Graph g, Vertex v);
 
-//complete
+//Graph Representation using Adjacency list representation
 struct GraphRep{
 	int nVertices;
 	int nEdges;
 	AdjList *edges;
 };
 
-//complete
+//Creates a new graph
 Graph newGraph(int noNodes) {
 
 	assert(noNodes > 0);
@@ -30,13 +31,13 @@ Graph newGraph(int noNodes) {
 	return new;
 }
 
-//complete
+//returns number of vertices in a graph
 int numVerticies(Graph g) {
 	assert(g != NULL);
 	return g->nVertices;
 }
 
-//complete
+//inserts edge into a graph 
 void  insertEdge(Graph g, Vertex src, Vertex dest, int weight) {
 	assert (g != NULL);
 	assert(weight > 0);
@@ -61,7 +62,7 @@ void  insertEdge(Graph g, Vertex src, Vertex dest, int weight) {
 	}
 }
 
-//complete
+//removes and edge from graph and frees associated memory with that edge
 void  removeEdge(Graph g, Vertex src, Vertex dest) {
 	assert (g != NULL);
 	assert(validVertex(g,src) && validVertex(g,dest));
@@ -88,7 +89,7 @@ void  removeEdge(Graph g, Vertex src, Vertex dest) {
 	free(curr);
 }
 
-//complete
+//checks if two given vertices are adjacent in a graph
 bool adjacent(Graph g, Vertex src, Vertex dest) {
 	assert (g != NULL);
 	assert(validVertex(g,src) && validVertex(g,dest));
@@ -102,7 +103,8 @@ bool adjacent(Graph g, Vertex src, Vertex dest) {
 	return false;
 }
 
-//complete
+//Returns a list of adjacent vertices
+//on outgoing edges from a given vertex.
 AdjList outIncident(Graph g, Vertex v) {
 	assert (g != NULL);
 	assert(validVertex(g,v));
@@ -129,7 +131,8 @@ AdjList outIncident(Graph g, Vertex v) {
 	return outInciList;
 }
 
-//complete
+//Returns a list of adjacent vertices
+//on incoming edges from a given vertex.
 AdjList inIncident(Graph g, Vertex v) {
 	assert (g != NULL);
 	assert(validVertex(g,v));
@@ -160,7 +163,7 @@ AdjList inIncident(Graph g, Vertex v) {
 	return inInciList;
 }
 
-//complete
+//prints graph for testing and visual inspection
 void  showGraph(Graph g) {
 	assert (g != NULL);
 	printf("Num of Vertices = %d, Num of Edges = %d\n", g->nVertices, g->nEdges);
@@ -174,7 +177,7 @@ void  showGraph(Graph g) {
 	}
 }
 
-//complete
+//frees all memory associated with graph
 void  freeGraph(Graph g) {
 
 	assert (g != NULL);
@@ -191,6 +194,7 @@ void  freeGraph(Graph g) {
 	free(g);
 }
 
+//checks if a given vertex is valid
 static int validVertex(Graph g, Vertex v){
 
 	return (g != NULL && v >= 0 && v < g->nVertices);
