@@ -10,8 +10,10 @@ static bool inPredNodeList(PredNode* L, Vertex ver);
 static void freePredList(PredNode* L);
 static void freeAdjListMem(AdjList L);
 
-//shortest distance complete
-//working on pred path - almost there
+/* Finds shortest paths from a given vertex to all other vertices, as discussed in the lectures.
+ * Returns 'ShortestPaths' structure with the required information
+ * (i.e. 'distance' array, 'predecessor' arrays, source and no_of_nodes in the graph)
+ */
 ShortestPaths dijkstra(Graph g, Vertex v) {
 	
 	ShortestPaths throwAway;
@@ -38,7 +40,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	PQ priorQ = newPQ();
 
 	//add adjacent vertices and edge weights 
-    AdjList l = outIncident(g, v);
+    	AdjList l = outIncident(g, v);
 	AdjList curr = l;
 	while (curr != NULL){
 		ItemPQ new;
@@ -49,16 +51,19 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
     }
     
 	//add the source vertex to the Priority Queue
+	//make its distance 0
 	ItemPQ src;
 	src.key = v;
 	src.value = 0;
 	addPQ(priorQ, src);
-
+	
+	//until the priority queue is empty
 	while(!PQEmpty(priorQ)){
 		ItemPQ popItem = dequeuePQ(priorQ);
 		Vertex u = popItem.key;
 		AdjList new = outIncident(g, u);
 		AdjList curr = new;
+		
 		while (curr != NULL){
 			if (throwAway.dist[curr->w] > (throwAway.dist[u] + curr->weight)){
 				throwAway.dist[curr->w] = throwAway.dist[u] + curr->weight;
@@ -93,6 +98,8 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 		freeAdjListMem(new);
 	}
 	
+	//convert the distance of all the vertices that can't
+	//be reached from src vertex from infinity to 0
 	for(int i = 0; i < throwAway.noNodes; i++){
 	    if(throwAway.dist[i] == INT_MAX){
 	        throwAway.dist[i] = 0;
