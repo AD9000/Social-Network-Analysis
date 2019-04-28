@@ -1,5 +1,4 @@
 // PQ ADT interface for Ass2 (COMP2521)
-//Written by Jasdeep, Atharv & Pramit
 #include "PQ.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,13 +9,14 @@ static void fixUp(ItemPQ **a, int i);
 static void fixDown(ItemPQ **a, int i, int N);
 static void swap(ItemPQ **a, int i, int j);
 
+//Priority Queue Representation
 struct PQRep {
     ItemPQ ** Prior_Q; //an array of pointers to PQ structures
     int N; //num of elements in PQ;
     int nSlots; //Number of slots/spaces in array
 };
 
-//complete
+//Creates new priority queue, that can store items of type ItemPQ.
 PQ newPQ() {
 
 	PQ new = malloc(sizeof(struct PQRep));
@@ -30,13 +30,14 @@ PQ newPQ() {
 	return new;
 }
 
-//complete
+//checks if Priority Queue is empty
 int PQEmpty(PQ p) {
 
 		return (p->N == 0);
 }
 
-//complete
+//Adds item (ItemPQ) to the priority queue.
+//If an item with 'key' exists, it's 'value' is updated.
 void addPQ(PQ pq, ItemPQ element) {
     
     //realloc more memory if array Prior_Q is full
@@ -44,6 +45,9 @@ void addPQ(PQ pq, ItemPQ element) {
         pq->Prior_Q = realloc(pq->Prior_Q, 2*MAX_ELEMS);
         assert(pq->Prior_Q != NULL);
         pq->nSlots = pq->nSlots + MAX_ELEMS;
+        for (int i = (pq->N + 1); i <= pq->nSlots; i++){
+            pq->Prior_Q[i] = NULL;
+        }
     }
     
     //update 'value' if 'key' exists
@@ -59,6 +63,7 @@ void addPQ(PQ pq, ItemPQ element) {
     
     if (existsFlag){
         updatePQ(pq, element);
+
     //insertion if key does not exist
     } else {
         ItemPQ *newNode = malloc(sizeof(ItemPQ));
@@ -70,7 +75,8 @@ void addPQ(PQ pq, ItemPQ element) {
     }
 }
 
-//complete
+//Removes and returns the item (ItemPQ) with smallest 'value'.
+//For items with equal 'value', observes FIFO.
 ItemPQ dequeuePQ(PQ pq) {
 	
 	ItemPQ throwAway;
@@ -83,7 +89,8 @@ ItemPQ dequeuePQ(PQ pq) {
 	return throwAway;
 }
 
-//complete
+//Updates item with a given 'key' value, by updating that item's value to the given 'value'.
+//If item with 'key' does not exist in the queue, no action is taken
 void updatePQ(PQ pq, ItemPQ element) {
     
     int i = 1;
@@ -104,7 +111,7 @@ void updatePQ(PQ pq, ItemPQ element) {
 
 }
 
-//complete
+//prints Priority Queue for testing and visual inspection
 void  showPQ(PQ pq) {
     
     int i = 1;
@@ -114,7 +121,7 @@ void  showPQ(PQ pq) {
     }
 }
 
-//complete
+//frees memory associated with Priority Queue
 void  freePQ(PQ pq) {
 
     assert(pq != NULL);
@@ -129,7 +136,7 @@ void  freePQ(PQ pq) {
 }
 
 
-//complete
+//swaps two nodes of Priority Queue
 static void swap(ItemPQ **a, int i, int j){
 
    ItemPQ *tmp = a[i];
@@ -137,7 +144,8 @@ static void swap(ItemPQ **a, int i, int j){
    a[j] = tmp;
 }
  
-//complete
+//when a new element/node is inserted or updated (less than current value)
+//to the queue it moves the element in the right place by going up the heap
 static void fixUp(ItemPQ **a, int i){
     while(i > 1 && a[i/2]->value > a[i]->value){
         swap(a, i, i/2);
@@ -145,7 +153,9 @@ static void fixUp(ItemPQ **a, int i){
     }
 }
 
-//complete
+//when the root element is removed from the heap or
+//updated (more than the current value of Node), it moves 
+//the element in the right place by going down the heap
 static void fixDown(ItemPQ **a, int i, int N){
     
     while(2*i < N){
