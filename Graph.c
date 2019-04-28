@@ -1,15 +1,11 @@
 // Graph ADT interface for Ass2 (COMP2521)
 //Written By Jasdeep, Atharv & Pramith
 
-//Testing Complete
-//Syntactically Correct
-//Passes testGraph.sh
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
 #include "Graph.h"
+
 static int validVertex(Graph g, Vertex v);
 
 //complete
@@ -110,7 +106,26 @@ bool adjacent(Graph g, Vertex src, Vertex dest) {
 AdjList outIncident(Graph g, Vertex v) {
 	assert (g != NULL);
 	assert(validVertex(g,v));
-	AdjList outInciList = g->edges[v];
+	AdjList curr = g->edges[v];
+	AdjList outInciList = NULL;
+    while(curr != NULL){
+        if(outInciList == NULL){
+            AdjList new = malloc(sizeof(adjListNode));
+		    assert(new != NULL);
+		    new->w = curr->w;
+		    new->weight = curr->weight;
+		    outInciList = new;
+		    new->next = NULL;
+        } else {
+            AdjList new = malloc(sizeof(adjListNode));
+			assert(new != NULL);
+			new->w = curr->w;
+			new->weight = curr->weight;
+			new->next = outInciList;
+			outInciList = new;
+        }
+       curr = curr->next;
+    }	
 	return outInciList;
 }
 
@@ -148,7 +163,7 @@ AdjList inIncident(Graph g, Vertex v) {
 //complete
 void  showGraph(Graph g) {
 	assert (g != NULL);
-	printf("Num of Vertices = %d, Num of Edges = %d", g->nVertices, g->nEdges);
+	printf("Num of Vertices = %d, Num of Edges = %d\n", g->nVertices, g->nEdges);
 	for(int i = 0; i < g->nVertices; i++){
 		AdjList curr = g->edges[i];
 		while(curr != NULL){
