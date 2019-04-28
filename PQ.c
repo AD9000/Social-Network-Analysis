@@ -9,11 +9,11 @@
 static void fixUp(ItemPQ **a, int i);
 static void fixDown(ItemPQ **a, int i, int N);
 static void swap(ItemPQ **a, int i, int j);
-//static int larger(ItemPQ*, ItemPQ*);
 
 struct PQRep {
     ItemPQ ** Prior_Q; //an array of pointers to PQ structures
     int N; //num of elements in PQ;
+    int nSlots; //Number of slots/spaces in array
 };
 
 //complete
@@ -22,77 +22,91 @@ PQ newPQ() {
 	PQ new = malloc(sizeof(struct PQRep));
 	assert(new != NULL);
 	new->Prior_Q = malloc(MAX_ELEMS * (sizeof(ItemPQ*)));
-	assert(new->Prior_Q != NULL);
 	for (int i = 0; i < MAX_ELEMS; i++){
 	    new->Prior_Q[i] = NULL;
 	}
 	new->N = 0;
+	new->nSlots = MAX_ELEMS - 1;
 	return new;
 }
 
 //complete
 int PQEmpty(PQ p) {
-	
-	assert(pq != NULL);
-	return (p->N == 0);
+
+		return (p->N == 0);
 }
 
 //complete
 void addPQ(PQ pq, ItemPQ element) {
-	
-    assert(pq != NULL);
+    
+    //realloc more memory if array Prior_Q is full
+    if(pq->N == pq->nSlots){
+        pq->Prior_Q = realloc(pq->Prior_Q, 2*MAX_ELEMS);
+        assert(pq->Prior_Q != NULL);
+        pq->nSlots = pq->nSlots + MAX_ELEMS;
+    }
+    
     //update 'value' if 'key' exists
+    int existsFlag = 0;
     int i = 1;
     while(i <= pq->N && pq->Prior_Q[i] != NULL){
         if(pq->Prior_Q[i]->key == element.key){
-            pq->Prior_Q[i]->value = element.value;
-            fixUp(pq->Prior_Q, pq->N);
-            return;
+            existsFlag = 1;
+            break;
         }
         i++;
     }
     
+    if (existsFlag){
+        updatePQ(pq, element);
     //insertion if key does not exist
-    ItemPQ *newNode = malloc(sizeof(ItemPQ));
-    pq->N++;
-    pq->Prior_Q[pq->N] = newNode;
-    newNode->key = element.key;
-    newNode->value = element.value;
-    fixUp(pq->Prior_Q, pq->N);
+    } else {
+        ItemPQ *newNode = malloc(sizeof(ItemPQ));
+        pq->N++;
+        pq->Prior_Q[pq->N] = newNode;
+        newNode->key = element.key;
+        newNode->value = element.value;
+        fixUp(pq->Prior_Q, pq->N);
+    }
 }
 
 //complete
 ItemPQ dequeuePQ(PQ pq) {
 	
-	assert(pq != NULL);
 	ItemPQ throwAway;
 	throwAway.key = pq->Prior_Q[1]->key;
 	throwAway.value = pq->Prior_Q[1]->value;
 	pq->Prior_Q[1] = pq->Prior_Q[pq->N];
+	free(pq->Prior_Q[1]);
 	pq->N--;
 	fixDown(pq->Prior_Q, 1, pq->N);
-	
 	return throwAway;
 }
 
 //complete
 void updatePQ(PQ pq, ItemPQ element) {
     
-    assert(pq != NULL);
     int i = 1;
     while (i <= pq->N){
-        if(pq->Prior_Q[i]->key == element.key){
-            pq->Prior_Q[i]->value = element.value;
-            fixUp(pq->Prior_Q, pq->N);
+        if((pq->Prior_Q[i]->key) == (element.key)){
+            if ((element.value) < (pq->Prior_Q[i]->value)){
+                pq->Prior_Q[i]->value = element.value;
+                fixUp(pq->Prior_Q, i);
+                return;
+            } else if ((element.value) > (pq->Prior_Q[i]->value)){
+                pq->Prior_Q[i]->value = element.value;
+                fixDown(pq->Prior_Q, 1, pq->N);
+                return;
+            } 
         }
         i++;
     }
+
 }
 
 //complete
 void  showPQ(PQ pq) {
-	
-    assert(pq != NULL);
+    
     int i = 1;
     while(pq->Prior_Q[i] != NULL && i <= pq->N){
         printf("(%d, %d)\n", pq->Prior_Q[i]->key, pq->Prior_Q[i]->value);
@@ -106,7 +120,7 @@ void  freePQ(PQ pq) {
     assert(pq != NULL);
     int i = 1;
     while (i <= pq->N && pq->Prior_Q[i] != NULL){
-        ItemPQ *PQNode=  pq->Prior_Q[i];
+        ItemPQ *PQNode =  pq->Prior_Q[i];
         free(PQNode);
         i++;
     }
