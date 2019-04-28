@@ -8,6 +8,7 @@
 
 static bool inPredNodeList(PredNode* L, Vertex ver);
 static void freePredList(PredNode* L);
+static void freeAdjListMem(AdjList L);
 
 //shortest distance complete
 //working on pred path - almost there
@@ -37,7 +38,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	PQ priorQ = newPQ();
 
 	//add adjacent vertices and edge weights 
-    	AdjList l = outIncident(g, v);
+    AdjList l = outIncident(g, v);
 	AdjList curr = l;
 	while (curr != NULL){
 		ItemPQ new;
@@ -45,7 +46,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 		new.value = curr->weight;
 		addPQ(priorQ, new);
 		curr = curr->next;
-    	}
+    }
     
 	//add the source vertex to the Priority Queue
 	ItemPQ src;
@@ -82,12 +83,14 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			    if (!inPredNodeList(throwAway.pred[curr->w], u)){
 			        PredNode *new = malloc(sizeof(PredNode));
 			        new->v = u;
-			    	new->next = throwAway.pred[curr->w];
-			    	throwAway.pred[curr->w] = new;
+		            new->next = throwAway.pred[curr->w];
+		            throwAway.pred[curr->w] = new;
 			    }
 			}
+			
 			curr = curr->next;
 		}
+		freeAdjListMem(new);
 	}
 	
 	for(int i = 0; i < throwAway.noNodes; i++){
@@ -95,6 +98,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	        throwAway.dist[i] = 0;
 	    }
 	}
+	freeAdjListMem(l);
 	freePQ(priorQ);
 	return throwAway;
 }
@@ -156,6 +160,17 @@ static void freePredList(PredNode* L){
     while (curr != NULL){
         prev = curr;
         curr = curr->next;
+        free(prev);
+    }
+}
+
+//free memory allocated to outIncident list from Graph.c
+static void freeAdjListMem(AdjList L){
+    adjListNode *prev = NULL;
+    adjListNode *current = L;
+    while (current != NULL){
+        prev = current;
+        current = current->next;
         free(prev);
     }
 }
