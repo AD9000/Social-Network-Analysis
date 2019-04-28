@@ -76,8 +76,8 @@ ItemPQ dequeuePQ(PQ pq) {
 	ItemPQ throwAway;
 	throwAway.key = pq->Prior_Q[1]->key;
 	throwAway.value = pq->Prior_Q[1]->value;
-	pq->Prior_Q[1] = pq->Prior_Q[pq->N];
 	free(pq->Prior_Q[1]);
+	pq->Prior_Q[1] = pq->Prior_Q[pq->N];
 	pq->N--;
 	fixDown(pq->Prior_Q, 1, pq->N);
 	return throwAway;
