@@ -16,6 +16,7 @@ static void freeAdjListMem(AdjList L);
  */
 ShortestPaths dijkstra(Graph g, Vertex v) {
 	
+	//declaring throwAway structure
 	ShortestPaths throwAway;
 	throwAway.noNodes = numVerticies(g);
 	throwAway.src = v;
@@ -59,23 +60,41 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 	
 	//until the priority queue is empty
 	while(!PQEmpty(priorQ)){
+
+		//extract the minimum distance vertex from pq
 		ItemPQ popItem = dequeuePQ(priorQ);
 		Vertex u = popItem.key;
 		AdjList new = outIncident(g, u);
 		AdjList curr = new;
 		
+		//Loop through all adjacent vertices of u and
+		//do the following for every adjacent vertex uVertex.
+		//If there is a shorter path to uVertex through u
+		//update the distance of uVertex.
+		//Also update the PredNode list with predecessor vertices
 		while (curr != NULL){
+
+			//if a shorter path from u to curr->w node exists
+			//update the distance and add u as pred in the PredNode list
 			if (throwAway.dist[curr->w] > (throwAway.dist[u] + curr->weight)){
 				throwAway.dist[curr->w] = throwAway.dist[u] + curr->weight;
 				ItemPQ uVertex;
 				uVertex.key = curr->w;
 				uVertex.value = curr->weight;
+
+				//insert uVertex in the pq even if it is already there
 				addPQ(priorQ, uVertex);
+				
+				//if the PredNode linked list is empty
 				if(throwAway.pred[curr->w] == NULL){
 				    PredNode *new = malloc(sizeof(PredNode));
 				    throwAway.pred[curr->w] = new;
 				    new->v = u;
 				    new->next = NULL;
+
+				//Delete the existing PredNode linked list and
+				//create new one as new shortest path has been found.
+				//The new path would have different PredNodes
 				} else {
 				    freePredList(throwAway.pred[curr->w]);
 			        PredNode *new = malloc(sizeof(PredNode));
@@ -84,6 +103,8 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 			        new->next = NULL;
 				}
 			}
+			//if the shortest distance is the same as existing
+			//shortest path, add the vertex to PredNode list
 			if (throwAway.dist[curr->w] == (throwAway.dist[u] + curr->weight)){
 			    if (!inPredNodeList(throwAway.pred[curr->w], u)){
 			        PredNode *new = malloc(sizeof(PredNode));
@@ -111,7 +132,7 @@ ShortestPaths dijkstra(Graph g, Vertex v) {
 }
 
 
-//complete
+//prints the struct ShortestPaths for testing and visual inspection
 void showShortestPaths(ShortestPaths paths) {
     printf("Total Nodes in Graph: %d\n\n", paths.noNodes);
     printf("Distance from node %d to other nodes is as under: \n", paths.src);
@@ -130,7 +151,7 @@ void showShortestPaths(ShortestPaths paths) {
     }
 }
 
-//complete
+//frees memory allocated to ShortestPaths struct
 void  freeShortestPaths(ShortestPaths paths) {
     free(paths.dist);
     //free the linked lists in the pred
@@ -181,3 +202,4 @@ static void freeAdjListMem(AdjList L){
         free(prev);
     }
 }
+
